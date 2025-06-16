@@ -62,6 +62,7 @@ def telegram_webhook(request):
             username = chat.get("username")
             first_name = chat.get("first_name")
             last_name = chat.get("last_name")
+            print("✅ Telegram /start received from:", telegram_id, username, first_name, last_name)
 
             # Store or retrieve Telegram user
             user, created = TelegramUser.objects.get_or_create(
