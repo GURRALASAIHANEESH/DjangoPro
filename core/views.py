@@ -6,7 +6,7 @@ from django.conf import settings
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated # Import IsAuthenticated
 
 # Assuming your TelegramUser model is in the same app's models.py
 # If it's in a different app, adjust the import accordingly (e.g., from myapp.models import TelegramUser)
@@ -21,6 +21,18 @@ def public_view(request):
     Demonstrates a simple Django REST Framework view.
     """
     return Response({"message": "This is a public endpoint. Anyone can access it!"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated]) # This view requires authentication
+def protected_view(request):
+    """
+    A protected endpoint that only authenticated users can access.
+    Demonstrates Django REST Framework's IsAuthenticated permission.
+    """
+    # request.user will be available because the user is authenticated
+    user = request.user
+    return Response({"message": f"Hello, {user.username}! You are authenticated and accessing a protected endpoint."})
 
 
 @csrf_exempt
@@ -49,6 +61,7 @@ def telegram_webhook(request):
                     "last_name": last_name,
                 }
             )
+
 
         # Always return a 200 OK response to Telegram
         return JsonResponse({"status": "received"})
